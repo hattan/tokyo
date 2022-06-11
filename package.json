@@ -8,9 +8,11 @@
   },
   "author": "Engin Polat",
   "scripts": {
-    "pack": "npx tfx-cli extension create --rev-version"
+    "pack": "npx tfx-cli extension create --rev-version",
+     "web": "npx live-server --port=9393 --entry-file=src/main.html"
   },
   "dependencies": {
+    "live-server": "^1.2.2",
     "vss-web-extension-sdk": "5.141.0"
   }
 }
