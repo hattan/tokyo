@@ -1,4 +1,4 @@
-function buttonHandler(dialogService,extensionInfo) {
+function buttonHandler(dialogService,extensionInfo, properties) {
     const options = {
       title: "Team Members",
       width: 300,
@@ -47,17 +47,48 @@ function buttonHandler(dialogService,extensionInfo) {
     dialogService.openDialog(extensionInfo.publisherId + "." + extensionInfo.extensionId + ".popupDialog", options, { properties });
 }
 
-function setupDev() {
+function isDevEnvironment(){
     let port = location.port;
-    if (port == "9393"){
-      console.log("DEV ENVIRONMENT!")
-      VSS = {
-          init : function() {
+    return (port == "9393");
+}
+function setupDevShim() {
+    console.log("DEV ENVIRONMENT!");
+    let defaultDiv = document.getElementById('default');
+    defaultDiv.className = 'hidden';
+    VSS = {
+        init : function() {
 
-          },
-          register : function(){
-              
-          }
-      }
+        },
+        register : function(){
+            template=document.getElementById("localTest");
+            this.appendDiv("<H1>Team Randomizer Test Page</H1>");
+            this.appendDiv("<button id='dev'><img src='src/icon.png' /></button> ");
+            this.appendDiv("<iframe src='' id='popUpFrame' class='hidden'></iframe>");
+            let dev = document.getElementById("dev");
+            dev.addEventListener('click', (event) => {
+                extensionInfo = {
+                    publisherId : "test-publisher",
+                    extensionId : "1234"
+                };
+                dialogService = {
+                    openDialog : function(page,options,properties) {
+                        console.log("open " + page);
+                        let popUpFrame = document.getElementById("popUpFrame");
+                        popUpFrame.classList.remove('hidden');
+                        popUpFrame.src ="src/popupDialog.html";
+                    }
+                };
+                properties = {};
+                buttonHandler(dialogService, extensionInfo, properties);
+    
+            });
+        },
+        appendDiv : function(content){
+            var myDiv = document.createElement("div");
+            myDiv.innerHTML = content;
+            myDiv.classList.add("devContent")
+            document.body.appendChild(myDiv);
+        }
     }
+    
 }
