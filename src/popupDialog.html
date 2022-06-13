@@ -6,8 +6,6 @@
   <script src="scripts/popup.js"></script>
   <script src="../node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"></script>
   <style>
-    html, body { margin:0; padding:0; overflow:scroll; }
-
     .bold {
       font-weight: bold;
     }
@@ -17,24 +15,30 @@
       color: #999;
     }
 
-    #message {
-      margin: 10px;
-    }
-
     #canvas {
       display: none;
+    }
+    body { 
+      padding:10px;
+    }
+    #completePanel {
+      margin-bottom:10px;
     }
   </style>
 </head>
 <body style="background-color:inherit">
-  <canvas id="canvas"></canvas>
-  <p id="message" style="display:none;"></p>
+  <section id="completePanel">
+    <canvas id="canvas"></canvas>
+    <p id="message"></p>
+  </section>      
+  
   <p id="question"></p>
-  <div>
+  <div id="controls">
     <button id="buttonNext">Next</button>
     <button id="buttonStartOver">Start Over</button>
   </div>
   <table id="team"></table>
+
   <script type="text/javascript">
     "use strict";
     if(isDevEnvironment())

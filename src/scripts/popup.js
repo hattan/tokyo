@@ -36,11 +36,17 @@ function loadData(_client, webContext){
 
       question.innerText = questionOfTheDay.text;
 
-      let notCompletedTeamMembers = members.filter((member) => {
-        return !completedTeamMembers.some((teamMember) => {
-          return teamMember === member.identity.id;
-        });
-      });
+      let notCompletedTeamMembers = [];
+      for(let i=0,len=members.length;i<len;i++){
+        let member = members[i];
+        let found = notCompletedTeamMembers.includes(member.identity.id);
+        
+      }
+      // let notCompletedTeamMembers = members.filter((member) => {
+      //   return !completedTeamMembers.some((teamMember) => {
+      //     return teamMember === member.identity.id;
+      //   });
+      // });
 
       if (notCompletedTeamMembers.length === 0) {
         canvas.style.display = "block";
@@ -214,6 +220,6 @@ function loadData(_client, webContext){
         startRandomizer();
       });
 
-      buttonNext.click();
+      //buttonNext.click();
     });
 }
