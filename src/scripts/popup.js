@@ -89,7 +89,7 @@ function loadData(_client, webContext){
 
             localStorage.setItem(key, JSON.stringify({question: questionOfTheDay, members: completedTeamMembers}));
           } else {
-            timer = setInterval(randomNumber, 200);
+            timer = setInterval(randomNumber, 80);
           }
         }
       };
@@ -97,6 +97,7 @@ function loadData(_client, webContext){
       buttonStartOver.addEventListener("click", () => {
         canvas.style.display = "none";
         message.style.display = "none";
+        buttonNext.disabled = false;
 
         const key = (new Intl.DateTimeFormat().format(new Date())).replace(/\//g, "");
         localStorage.removeItem(key);
