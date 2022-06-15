@@ -32,35 +32,42 @@
     #content {
       padding:10px;
     }
-    .settings {
-      width:100%;
-      display: block;
-      text-align: right;
+
+    section {
+      margin-top:20px;
     }
+    #team{
+      margin-top:20px;
+    }
+
   </style>
 </head>
 <body style="background-color:inherit">
   <div id="content">
-    <a href="settings.html" class="settings"> <span>&#9881;</span>settings</a>
-    <section id="completePanel">
-      <canvas id="canvas"></canvas>
-      <p id="message"></p>
-    </section>      
-    
-    <section id="questionPanel">
-      Question of the day: <br/>
-      <span id="question"></span>
+    <a href="popupDialog.html"> <span>&#x2B05;</span> back</a>
+
+    <h1>Settings</h1>
+    <section>
+      Show Question of the day: <input type="checkbox" id="showQuestion" checked/>
     </section>
-    <div id="controls">
-      <button id="buttonNext">Next</button>
-      <button id="buttonStartOver">Start Over</button>
-    </div>
-    <table id="team"></table>
-  </div>
+   <section>
+    Speed: <input type="range" name="price" id="price" min="50000" max="500000" step="100" value="250000">
+   </section>
+  
+    <section id="teamPanel">
+      Available Team Members:
+  
+      <table id="team"></table>
+    </section>
+
+</div>
   <script type="text/javascript">
     "use strict";
-    if(isDevEnvironment())
+    if(isDevEnvironment()){
       setupDevShim();
+      IS_SETTINGS=true;
+    }
+    VSS.init({ usePlatformScripts: true, usePlatformStyles: true });
 
     const team = document.getElementById("team");
     const canvas = document.getElementById("canvas");
@@ -69,12 +76,10 @@
     const buttonNext = document.getElementById("buttonNext");
     const buttonStartOver = document.getElementById("buttonStartOver");
 
-    VSS.init({ usePlatformScripts: true, usePlatformStyles: true });
-
     VSS.require(["VSS/Service", "TFS/Core/RestClient"], (VSS_Service, TFS_RestClient) => {
       const _client = VSS_Service.getCollectionClient(TFS_RestClient.CoreHttpClient4_1);
       const webContext = VSS.getWebContext();
-      loadData(_client,webContext)
+      loadSettingsData(_client,webContext)
       VSS.notifyLoadSucceeded();
     });
   </script>

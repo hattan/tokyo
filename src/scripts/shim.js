@@ -1,3 +1,5 @@
+IS_SETTINGS=false;
+
 function isDevEnvironment(){
     let port = location.port;
     return (port == "9393");
@@ -15,7 +17,7 @@ function setupDevShim() {
         register : function(){
             template=document.getElementById("localTest");
             this.appendDiv("<H1>Team Randomizer Test Page</H1>");
-            this.appendDiv("<button id='dev'><img src='src/icon.png' /></button> ");
+            this.appendDiv("<button id='dev'><img src='icon.png' /></button> ");
             this.appendDiv("<iframe src='' id='popUpFrame' class='hidden'></iframe>");
             let dev = document.getElementById("dev");
             dev.addEventListener('click', (event) => {
@@ -28,7 +30,7 @@ function setupDevShim() {
                         console.log("open " + page);
                         let popUpFrame = document.getElementById("popUpFrame");
                         popUpFrame.classList.remove('hidden');
-                        popUpFrame.src ="src/popupDialog.html";
+                        popUpFrame.src ="popupDialog.html";
                     }
                 };
                 properties = {};
@@ -62,7 +64,7 @@ function setupDevShim() {
                     id : "54321"
                 }
             }
-            loadData(_client,webContext)
+            IS_SETTINGS ? loadSettingsData(_client,webContext) : loadData(_client,webContext);
         },
         notifyLoadSucceeded : function(){
 

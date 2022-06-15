@@ -1,7 +1,7 @@
 function buttonHandler(dialogService,extensionInfo, properties) {
     const options = {
       title: "Team Members",
-      width: 300,
+      width: 400,
       height: 600,
       buttons: null
     };
