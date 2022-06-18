@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Team Member Randomizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+  <script src="scripts/shim.js"></script>
+  <script src="scripts/bond.js"></script>
+  <script src="scripts/popup.js"></script>
+  <script src="../node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"></script>
+  <style>
+    .bold {
+      font-weight: bold;
+    }
+    .green{
+      color:green;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    #canvas {
+      display: none;
+    }
+    #completePanel {
+      margin-bottom:10px;
+    }
+    #questionPanel{
+      margin-bottom:20px;
+    }
+
+    #controls {
+      margin-bottom:20px;
+    }
+
+    #content {
+      padding:10px;
+    }
+    .settings {
+      width:100%;
+      display: block;
+      text-align: right;
+    }
+
+    .personCount,.personAvatar {
+      margin-right:10px;
+    }
+    .
+  </style>
+</head>
+<body style="background-color:inherit">
+  <div id="content">
+    <a href="settings.html" class="settings"> <span>&#9881;</span>settings</a>
+    <section id="completePanel">
+      <canvas id="canvas"></canvas>
+      <p id="message"></p>
+    </section>      
+    
+    <section id="questionPanel">
+      Question of the day: <br/>
+      <span id="question"></span>
+    </section>
+    <div id="controls">
+      <button id="buttonNext">Next</button>
+      <button id="buttonStartOver">Start Over</button>
+    </div>
+
+    <div id="members">
+      {{#each this}}
+        {{#if providedUpdate}}
+          <div class="completed">
+        {{else if current}} 
+          <div class="green bold">            
+        {{else if bold}}         
+          <div class="bold">
+        {{else}}
+          <div>
+        {{/if}}
+
+        <span class="personCount">{{inc @index}}</span>
+        <img class="personAvatar" src='{{this.identity.imageUrl }}' width='44' height='44' />
+
+        {{this.identity.displayName}}
+      </div>
+    {{/each}}
+    </div>
+
+  </div>
+  <script type="text/javascript">
+    "use strict";
+    if(isDevEnvironment())
+          setupDevShim();
+
+    const team = document.getElementById("team");
+    const canvas = document.getElementById("canvas");
+    const message = document.getElementById("message");
+    const question = document.getElementById("question");
+    const buttonNext = document.getElementById("buttonNext");
+    const buttonStartOver = document.getElementById("buttonStartOver");
+
+    VSS.init({ usePlatformScripts: true, usePlatformStyles: true });
+
+    VSS.require(["VSS/Service", "TFS/Core/RestClient"], (VSS_Service, TFS_RestClient) => {
+      const _client = VSS_Service.getCollectionClient(TFS_RestClient.CoreHttpClient4_1);
+      const webContext = VSS.getWebContext();
+      loadData(_client,webContext)
+      VSS.notifyLoadSucceeded();
+    });
+
+
+
+  </script>
+</body>
+</html>

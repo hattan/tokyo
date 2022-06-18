@@ -1,3 +1,15 @@
+var model = bond.Create();
+function bindMembers(members){
+  model.members = members;
+}
+function resetMembers(members){
+  members.forEach(m=>{
+    m.current=false;
+    m.bold=false;
+    m.completed=false;
+  });
+  bindMembers(members);
+}
 function loadData(_client, webContext){
     const projectId = webContext.project.id;
     const teamId = webContext.team.id;
@@ -5,26 +17,6 @@ function loadData(_client, webContext){
     let counter = 0;
 
     _client.getTeamMembersWithExtendedProperties(projectId, teamId, 100, 0).then((members) => {
-      const createRowForTeamMember = (member) => {
-        const row = document.createElement("tr");
-        row.id = `member-${member.identity.id}`;
-
-        const id = document.createElement("td");
-        const photo = document.createElement("td");
-        const name = document.createElement("td");
-
-        id.innerText = ++counter;
-        id.style.width = "10%";
-        photo.innerHTML = "<img src='" + member.identity.imageUrl + "' width='44' height='44' />";
-        photo.style.width = "50px";
-        name.innerHTML = "<span>" + member.identity.displayName + "</span>";
-
-        row.appendChild(id);
-        row.appendChild(photo);
-        row.appendChild(name);
-
-        return row;
-      }
 
       const randomRange = (min, max) => Math.random() * (max - min) + min;
 
@@ -38,33 +30,25 @@ function loadData(_client, webContext){
 
       let notCompletedTeamMembers = members;
 
-      members.forEach((member) => {
-        team.appendChild(createRowForTeamMember(member));
-      });
-
+      
+      bindMembers(members);
 
       const startRandomizer = () => {
         let randomizer = 0;
         const randomNumber = () => {
-          const randomIndex = Math.floor(Math.random() * notCompletedTeamMembers.length);
-          const randomMember = notCompletedTeamMembers[randomIndex];
-
-          team.querySelectorAll("tr").forEach((row) => {
-            row.click();
-            row.classList.remove("bold");
-          });
-
-          const memberElement = document.getElementById(`member-${randomMember.identity.id}`);
-          memberElement.classList.add("bold");
+          resetMembers(members);
+          const randomIndex = Math.floor(Math.random() * members.length);
+          let randomMember=members[randomIndex]
+          members[randomIndex].bold=true;
+          bindMembers(members);
+          
 
           if (randomizer++ > 20) {
             clearInterval(timer);
 
-            memberElement.style.color = "green";
-
-            completedTeamMembers.push(randomMember.identity.id);
-            notCompletedTeamMembers.splice(randomIndex, 1);
-
+            members[randomIndex].current=true;
+            bindMembers(members);
+         
             localStorage.setItem(key, JSON.stringify({question: questionOfTheDay, members: completedTeamMembers}));
 
             buttonNext.disabled = false;
@@ -95,6 +79,7 @@ function loadData(_client, webContext){
       };
 
       buttonStartOver.addEventListener("click", () => {
+        resetMembers(members);
         canvas.style.display = "none";
         message.style.display = "none";
         buttonNext.disabled = false;
@@ -104,29 +89,14 @@ function loadData(_client, webContext){
 
         completedTeamMembers = [];
         notCompletedTeamMembers = members.slice();
-
-        Array.from(team.children).forEach(tr => {
-          tr.className = "";
-          tr.style = "";
-        });
       });
 
       buttonNext.addEventListener("click", () => {
         canvas.style.display = "none";
         message.style.display = "none";
-
         buttonNext.disabled = true;
-
-        Array.from(team.children).forEach(tr => {
-          if(tr.style.color === "green") {
-            tr.className = "";
-            tr.style = "";
-            tr.classList.add("completed");
-          }
-        });
-
         startRandomizer();
-
+        return;
         let completed = document.getElementsByClassName('completed');
         let green = document.getElementsByClassName('green');
         let finished = completed.length + green.length;
@@ -219,7 +189,6 @@ function loadData(_client, webContext){
         
       });
 
-      //buttonNext.click();
     });
 }
 
