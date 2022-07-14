@@ -2,14 +2,18 @@
 <html>
 <head>
   <title>Team Member Randomizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
   <script src="scripts/shim.js"></script>
+  <script src="scripts/bond.js"></script>
   <script src="scripts/popup.js"></script>
   <script src="../node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"></script>
   <style>
     .bold {
       font-weight: bold;
     }
-
+    .green{
+      color:green;
+    }
     .completed {
       text-decoration: line-through;
       color: #999;
@@ -37,6 +41,11 @@
       display: block;
       text-align: right;
     }
+
+    .personCount,.personAvatar {
+      margin-right:10px;
+    }
+    .
   </style>
 </head>
 <body style="background-color:inherit">
@@ -55,12 +64,22 @@
       <button id="buttonNext">Next</button>
       <button id="buttonStartOver">Start Over</button>
     </div>
-    <table id="team"></table>
+
+    <div id="members"  >
+      {{#each this}}
+      <div class="{{this.getCss}}">
+        <span class="personCount">{{inc @index}}</span>
+        <img class="personAvatar" src='{{this.identity.imageUrl }}' width='44' height='44' />
+        {{this.identity.displayName}}
+      </div>
+    {{/each}}
+    </div>
+
   </div>
   <script type="text/javascript">
     "use strict";
     if(isDevEnvironment())
-      setupDevShim();
+          setupDevShim();
 
     const team = document.getElementById("team");
     const canvas = document.getElementById("canvas");
@@ -69,7 +88,7 @@
     const buttonNext = document.getElementById("buttonNext");
     const buttonStartOver = document.getElementById("buttonStartOver");
 
-    VSS.init({ usePlatformScripts: true, usePlatformStyles: true });
+    VSS.init({ applyTheme:true, usePlatformScripts: true, usePlatformStyles: true });
 
     VSS.require(["VSS/Service", "TFS/Core/RestClient"], (VSS_Service, TFS_RestClient) => {
       const _client = VSS_Service.getCollectionClient(TFS_RestClient.CoreHttpClient4_1);
@@ -77,6 +96,9 @@
       loadData(_client,webContext)
       VSS.notifyLoadSucceeded();
     });
+
+
+
   </script>
 </body>
 </html>

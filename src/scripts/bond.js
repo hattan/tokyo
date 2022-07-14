@@ -76,3 +76,8 @@ Handlebars.registerHelper("inc", function(value, options)
 {
     return parseInt(value) + 1;
 });
+
+Handlebars.registerHelper('getclass', function(item, options) {
+	if (item.current)
+	  return "green bold"
+ });
